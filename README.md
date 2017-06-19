@@ -1,4 +1,6 @@
 # Ob2SS: The Google Sheets Database
+"Ob2SS (**Ob**ject **To** **S**pread**S**heet) is an Apps Script library that lets you use a Google Spreadsheet as a database for your small projects. There's no setup required, works on any JavaScript object, and lets you create hybrid spreadsheet applications more easily."
+
 The content in this document is pretty focused on the technical details of the library.  Please visit the project page for implementation details, caveats, and examples.
 
 http://artofthesmart.com/projects/ob2ss-the-google-sheets-database
