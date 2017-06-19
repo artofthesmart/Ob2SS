@@ -1,8 +1,9 @@
-# Ob2SS
+# Ob2SS: The Google Sheets Database
+The content in this document is pretty focused on the technical details of the library.  Please visit the project page for implementation details, caveats, and examples.
+
 http://artofthesmart.com/projects/ob2ss-the-google-sheets-database
 
-## Reference Guide
-### Functions
+## Functions
 
 <dl>
 <dt><a href="#initialize">initialize(options)</a> ⇒ <code>bool</code></dt>
@@ -26,7 +27,7 @@ functionality.</p>
 
 <a name="initialize"></a>
 
-#### initialize(options) ⇒ <code>bool</code>
+## initialize(options) ⇒ <code>bool</code>
 Initialize Ob2SS with options.  Details at artofthesmart.com/projects/ob2ss
 
 sheetKey: This is the key to a spreadsheet you want to use. Default is one is created for you.
@@ -41,7 +42,7 @@ headerOffset: What header offset to use.  Default 0.
 
 <a name="getTable"></a>
 
-#### getTable(type) ⇒ [<code>Ob2SSTable_</code>](#Ob2SSTable_)
+## getTable(type) ⇒ [<code>Ob2SSTable_</code>](#Ob2SSTable_)
 Returns a table from Ob2SS for read/write operations.
 
 Each table is a sheet in the Spreadsheet set up during initialization.
@@ -57,7 +58,7 @@ this will hook it up so you can begin reading/writing.
 
 <a name="Ob2SSTable_"></a>
 
-### Ob2SSTable_(options)
+## Ob2SSTable_(options)
 INTERNAL: Sets up a new table as part of Ob2SS.
 
 This is a constructor function for an Ob2SS "table".  It's a wrapper around a
@@ -75,6 +76,7 @@ functionality.
     * [.add(obj)](#Ob2SSTable_+add) ⇒ <code>boolean</code>
     * [.flattenObject()](#Ob2SSTable_+flattenObject)
     * [.unflattenObject()](#Ob2SSTable_+unflattenObject)
+    * [.sanitize(value)](#Ob2SSTable_+sanitize) ⇒ <code>string</code>
     * [.extendHeaders(flatObjProps)](#Ob2SSTable_+extendHeaders)
     * [.insertObject(flatObj)](#Ob2SSTable_+insertObject)
     * [.toArray()](#Ob2SSTable_+toArray) ⇒ <code>array</code>
@@ -111,19 +113,31 @@ for repeat IDs and throws an error if an ID is repeated.
 
 <a name="Ob2SSTable_+flattenObject"></a>
 
-#### ob2SSTable_.flattenObject()
+### ob2SSTable_.flattenObject()
 Flattens an object for writing.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
 <a name="Ob2SSTable_+unflattenObject"></a>
 
-#### ob2SSTable_.unflattenObject()
+### ob2SSTable_.unflattenObject()
 Unflattens an object for reading.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
+<a name="Ob2SSTable_+sanitize"></a>
+
+### ob2SSTable_.sanitize(value) ⇒ <code>string</code>
+Sanitizes a string for writing into a spreadsheet.
+
+**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
+**Returns**: <code>string</code> - A string that is safe to write to spreadsheets.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>string</code> | The value to sanitize. |
+
 <a name="Ob2SSTable_+extendHeaders"></a>
 
-#### ob2SSTable_.extendHeaders(flatObjProps)
+### ob2SSTable_.extendHeaders(flatObjProps)
 When an object is inserted into a table, its headers are checked against the
 headers already in place.  If they're different, the table's headers are 
 extended to accommodate the new object of the same type.
@@ -136,7 +150,7 @@ extended to accommodate the new object of the same type.
 
 <a name="Ob2SSTable_+insertObject"></a>
 
-#### ob2SSTable_.insertObject(flatObj)
+### ob2SSTable_.insertObject(flatObj)
 Inserts an object into the Google sheet.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
@@ -147,21 +161,21 @@ Inserts an object into the Google sheet.
 
 <a name="Ob2SSTable_+toArray"></a>
 
-#### ob2SSTable_.toArray() ⇒ <code>array</code>
+### ob2SSTable_.toArray() ⇒ <code>array</code>
 Reads all objects fromt he table into an array.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
 **Returns**: <code>array</code> - An array of all objects in the database.  
 <a name="Ob2SSTable_+count"></a>
 
-#### ob2SSTable_.count() ⇒ <code>number</code>
+### ob2SSTable_.count() ⇒ <code>number</code>
 Returns the number of items in the table.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
 **Returns**: <code>number</code> - The number of items in the table.  
 <a name="Ob2SSTable_+getObject"></a>
 
-#### ob2SSTable_.getObject() ⇒ <code>object</code>
+### ob2SSTable_.getObject() ⇒ <code>object</code>
 Gets an object by its ID.
 
 Note that while Ob2SS prevents you from writing an object with
@@ -173,7 +187,7 @@ with the ID you're looking for.
 **Returns**: <code>object</code> - The FIRST object with this id value.  
 <a name="Ob2SSTable_+rowToObject"></a>
 
-#### ob2SSTable_.rowToObject(row) ⇒ <code>object</code>
+### ob2SSTable_.rowToObject(row) ⇒ <code>object</code>
 Converts a row of data into an object.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
@@ -185,14 +199,14 @@ Converts a row of data into an object.
 
 <a name="Ob2SSTable_+getHeaders"></a>
 
-#### ob2SSTable_.getHeaders() ⇒ <code>array</code>
+### ob2SSTable_.getHeaders() ⇒ <code>array</code>
 Gets the headers for this table.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
 **Returns**: <code>array</code> - An array of strings that are the headers of this table.  
 <a name="Ob2SSTable_+getHeadersRange"></a>
 
-#### ob2SSTable_.getHeadersRange() ⇒ <code>Range</code>
+### ob2SSTable_.getHeadersRange() ⇒ <code>Range</code>
 Gets the range for the headers for this table.
 
 This function is important. We need to know which row is the header row
@@ -200,14 +214,13 @@ in order to insert and get objects, but it's variable. Some folks will never loo
 and use the built-in java-script-y titles, while other users will want to write their own
 custom "pretty" headers.
 
-IF useCustomHeaders is turned on, we will move 1 row back in selecting headers.  Throw
-an error if that's not possible.
+If **headerOffset** is set, the header row will offset by that amount (usually -1).
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
 **Returns**: <code>Range</code> - A Google Apps Script Range object where the headers are stored.  
 <a name="Ob2SSTable_+getColumnAsArray"></a>
 
-#### ob2SSTable_.getColumnAsArray() ⇒ <code>array</code>
+### ob2SSTable_.getColumnAsArray() ⇒ <code>array</code>
 Gets a column of the table as an array.
 
 Note that this is transposed such that it returns a horizontal array
@@ -217,7 +230,7 @@ representing the vertical values of a column.
 **Returns**: <code>array</code> - An array of values stored in this column.  
 <a name="Ob2SSTable_+getData"></a>
 
-#### ob2SSTable_.getData() ⇒ <code>array</code>
+### ob2SSTable_.getData() ⇒ <code>array</code>
 Gets a 2D array of all the object values of this table.
 
 This follows the convention of [Range].getValues(), so this array is indexed
@@ -227,14 +240,14 @@ first by row, then by column.
 **Returns**: <code>array</code> - A 2D array representing the table of objects.  
 <a name="Ob2SSTable_+getDataRange"></a>
 
-#### ob2SSTable_.getDataRange() ⇒ <code>Range</code>
+### ob2SSTable_.getDataRange() ⇒ <code>Range</code>
 Gets the range for all the objects in this table.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
 **Returns**: <code>Range</code> - A Google Apps Script Range object where the objects are stored.  
 <a name="Ob2SSTable_+getNextId"></a>
 
-#### ob2SSTable_.getNextId() ⇒ <code>number</code>
+### ob2SSTable_.getNextId() ⇒ <code>number</code>
 Gets the next ID for the table.
 
 Currently it's based on the current count of objects, guaranteeing
@@ -244,7 +257,7 @@ uniqueness at the expense of re-using IDs.
 **Returns**: <code>number</code> - The next Id value to use.  
 <a name="Ob2SSTable_+getObjectRange"></a>
 
-#### ob2SSTable_.getObjectRange(id) ⇒ <code>Range</code>
+### ob2SSTable_.getObjectRange(id) ⇒ <code>Range</code>
 Gets the range for a specific object in the table.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
@@ -256,7 +269,7 @@ Gets the range for a specific object in the table.
 
 <a name="Ob2SSTable_+remove"></a>
 
-#### ob2SSTable_.remove(obj) ⇒ <code>bool</code>
+### ob2SSTable_.remove(obj) ⇒ <code>bool</code>
 Removes an object from the database based on its id.
 
 The object must have an ID in order to find it in the sheet.
@@ -271,13 +284,13 @@ Returns false if the object is not found.
 
 <a name="Ob2SSTable_+clear"></a>
 
-#### ob2SSTable_.clear()
+### ob2SSTable_.clear()
 WARNING: Deletes all the objects in a table.  Good for some cases.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
 <a name="Ob2SSTable_+destroy"></a>
 
-#### ob2SSTable_.destroy()
+### ob2SSTable_.destroy()
 WARNING: Deletes the *entire table sheet* in the spreadsheet.
 
 **Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
