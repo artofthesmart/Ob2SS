@@ -128,6 +128,33 @@ Ob2SSTable_.prototype.add = function(obj) {
   this.insertObject(flatObj);
 }
 
+/**
+ * Updates an object in the table.
+ * 
+ * Both the `target` and the `source` of the update *MUST* have an identical
+ * 'id' parameter.  This throws errors if things aren't in place properly.
+ *
+ * @param {object} source The object you want to source changes from.
+ * @returns {boolean} True if update successful, false if not.
+ */
+Ob2SSTable_.prototype.update = function(source) {
+  if (!source) throw 'Update(source): Object is undefined.';
+  if (typeof source !== 'object') throw 'Update(source): Cannot update using a non-object.';
+  if (typeof source.id == 'undefined') throw 'Update(source): Cannot update without an id on the object.';
+
+  var target = this.getObject(source.id);
+  var flatTarget = this.flattenObject(target);
+  var flatSource = this.flattenObject(source);
+
+  for (var prop in flatSource) {
+    if (flatSource.hasOwnProperty(prop)) flatTarget[prop] = flatSource[prop];
+  }
+
+  // Extend headers in case this object has new properties, then update.
+  this.extendHeaders(Object.getOwnPropertyNames(flatSource));
+  this.updateObject(flatTarget);
+}
+
 // -- // -- // -- // -- // -- // -- // -- //
 /**
  * Flattens an object for writing.
@@ -226,6 +253,25 @@ Ob2SSTable_.prototype.insertObject = function(flatObj) {
     newRow.push(value);
   }
   this.sheet.appendRow(newRow);
+}
+
+/**
+ * Updates an object in the Google Sheet.
+ * 
+ * @param {object} flatObj The flattened object (with id) to be updated in the table to match.
+ */
+Ob2SSTable_.prototype.updateObject = function(flatObj) {
+  var newRow = [];
+  var headers = this.getHeaders();
+  for (var i = 0; i < headers.length; i++) {
+    var value = flatObj[headers[i]] || '';
+    value = this.sanitize(value);
+
+    newRow.push(value);
+  }
+
+  var objectRange = this.getObjectRange(flatObj.id);
+  objectRange.setValues([newRow]);
 }
 
 
@@ -344,10 +390,12 @@ Ob2SSTable_.prototype.getColumnAsArray = function(property) {
   if (this.count() == 0) return [];
 
   var columnIndex = this.getHeaders().indexOf(property);
+  Logger.log(columnIndex);
   if (columnIndex == -1) 
     throw 'Column (' + property + ') is not present for this type (' + this.type + ').';
 
-  var rowIndex = this.getHeadersRange().getRow() + 1;
+  // The first row is the row AFTER the header row and its offset.
+  var rowIndex = this.getHeadersRange().getRow() - (this.options.headerOffset || 0) + 1;
   var dataTable = this.sheet.getRange(rowIndex, columnIndex + 1,
                                       this.count(), 1).getValues();
   var columnValues = [];
@@ -374,7 +422,8 @@ Ob2SSTable_.prototype.getData = function() {
  * @returns {Range} A Google Apps Script Range object where the objects are stored.
  */
 Ob2SSTable_.prototype.getDataRange = function() {
-  return this.sheet.getRange(this.getHeadersRange().getRow(), 1, this.count(), this.sheet.getMaxColumns());
+  var firstDataRow = this.getHeadersRange().getRow() - (this.options.headerOffset || 0) + 1;
+  return this.sheet.getRange(firstDataRow, 1, this.count(), this.sheet.getMaxColumns());
 }
 /**
  * Gets the next ID for the table.
@@ -406,9 +455,9 @@ Ob2SSTable_.prototype.getObjectRange = function(id) {
   var position = this.getColumnAsArray('id').indexOf(id);
   if (position == -1) return null;
 
-  position += this.getHeadersRange().getRow();
+  position += this.getHeadersRange().getRow() + 1 - this.options.headerOffset;
 
-  return this.sheet.getRange(position + 1, 1, 1, this.sheet.getMaxColumns());
+  return this.sheet.getRange(position, 1, 1, this.sheet.getMaxColumns());
 }
 
 
