@@ -5,24 +5,52 @@ The content in this document is pretty focused on the technical details of the l
 
 http://artofthesmart.com/projects/ob2ss-the-google-sheets-database
 
+## Members
+
+<dl>
+<dt><a href="#TableWrapper">TableWrapper</a></dt>
+<dd><h2 id="table-functions">TABLE FUNCTIONS</h2>
+<hr>
+<p>Functions that interpret or manipulate a Google Sheet.</p>
+<p>These functions are time-intensive and can be costly to test.</p>
+</dd>
+<dt><a href="#DataManager">DataManager</a></dt>
+<dd><h2 id="data-manager">DATA MANAGER</h2>
+<hr>
+<p>Functions that manipulate objects or perform important checks.</p>
+<p>These are functions that support the interpretation of data from and to the tables.</p>
+</dd>
+</dl>
+
 ## Functions
 
 <dl>
 <dt><a href="#initialize">initialize(options)</a> ⇒ <code>bool</code></dt>
-<dd><p>Initialize Ob2SS with options.  Details at artofthesmart.com/projects/ob2ss</p>
-<p>sheetKey: This is the key to a spreadsheet you want to use. Default is one is created for you.
-headerOffset: What header offset to use.  Default 0.</p>
+<dd><p>Initialize Ob2SS with options.</p>
+<p>This initialization takes an <code>options</code> object. Options include:</p>
+<ul>
+<li><code>sheetKey</code>: [string] This is the key to a spreadsheet you want to use.</li>
+<li><code>headerOffset</code>: [int] What header offset to use.  Default is <code>0</code>.</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>Ob2SS.initialize()</code> Creates a companion spreadsheet for this script. Uses it every time.</li>
+<li><code>Ob2SS.initialize({ sheetKey: &#39;YOUR_SHEET_KEY&#39; })</code> Reads/writes data on that spreadsheet.</li>
+</ul>
+<p>You get the idea.</p>
 </dd>
-<dt><a href="#getTable">getTable(type)</a> ⇒ <code><a href="#Ob2SSTable_">Ob2SSTable_</a></code></dt>
+<dt><a href="#getTable">getTable(type)</a> ⇒ <code><a href="#Ob2SSTable">Ob2SSTable</a></code></dt>
 <dd><p>Returns a table from Ob2SS for read/write operations.</p>
-<p>Each table is a sheet in the Spreadsheet set up during initialization.
-If a table doesn&#39;t exist, one will be created for you.  If one exists,
-this will hook it up so you can begin reading/writing.</p>
+<p>Each table is a sheet in the Spreadsheet provided or set up during initialization.</p>
+<ul>
+<li>If a table doesn&#39;t exist, one will be created for you.</li>
+<li>If a table does exist, Ob2SS will connect to it for reading/writing.</li>
+</ul>
 </dd>
-<dt><a href="#Ob2SSTable_">Ob2SSTable_(options)</a></dt>
-<dd><p>INTERNAL: Sets up a new table as part of Ob2SS.</p>
+<dt><a href="#Ob2SSTable">Ob2SSTable(options)</a></dt>
+<dd><p>Constructs a new table as part of Ob2SS.</p>
 <p>This is a constructor function for an Ob2SS &quot;table&quot;.  It&#39;s a wrapper around a
-sheet object in Google Spreadsheets that includes insert/read/write/delete
+sheet in Google Spreadsheets that includes create/read/update/delete
 functionality.</p>
 </dd>
 </dl>
@@ -30,10 +58,17 @@ functionality.</p>
 <a name="initialize"></a>
 
 ## initialize(options) ⇒ <code>bool</code>
-Initialize Ob2SS with options.  Details at artofthesmart.com/projects/ob2ss
+Initialize Ob2SS with options.
 
-sheetKey: This is the key to a spreadsheet you want to use. Default is one is created for you.
-headerOffset: What header offset to use.  Default 0.
+This initialization takes an `options` object. Options include:
+- `sheetKey`: [string] This is the key to a spreadsheet you want to use.
+- `headerOffset`: [int] What header offset to use.  Default is `0`.
+
+Examples:
+- `Ob2SS.initialize()` Creates a companion spreadsheet for this script. Uses it every time.
+- `Ob2SS.initialize({ sheetKey: 'YOUR_SHEET_KEY' })` Reads/writes data on that spreadsheet.
+
+You get the idea.
 
 **Kind**: global function  
 **Returns**: <code>bool</code> - Whether initialization was successful.  
@@ -44,27 +79,27 @@ headerOffset: What header offset to use.  Default 0.
 
 <a name="getTable"></a>
 
-## getTable(type) ⇒ [<code>Ob2SSTable_</code>](#Ob2SSTable_)
+## getTable(type) ⇒ [<code>Ob2SSTable</code>](#Ob2SSTable)
 Returns a table from Ob2SS for read/write operations.
 
-Each table is a sheet in the Spreadsheet set up during initialization.
-If a table doesn't exist, one will be created for you.  If one exists,
-this will hook it up so you can begin reading/writing.
+Each table is a sheet in the Spreadsheet provided or set up during initialization.
+- If a table doesn't exist, one will be created for you.
+- If a table does exist, Ob2SS will connect to it for reading/writing.
 
 **Kind**: global function  
-**Returns**: [<code>Ob2SSTable_</code>](#Ob2SSTable_) - A table you can perform operations on.  
+**Returns**: [<code>Ob2SSTable</code>](#Ob2SSTable) - A table you can perform operations on.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | type | <code>string</code> | The type of data you want to read/write (think table or class). |
 
-<a name="Ob2SSTable_"></a>
+<a name="Ob2SSTable"></a>
 
-## Ob2SSTable_(options)
-INTERNAL: Sets up a new table as part of Ob2SS.
+## Ob2SSTable(options)
+Constructs a new table as part of Ob2SS.
 
 This is a constructor function for an Ob2SS "table".  It's a wrapper around a
-sheet object in Google Spreadsheets that includes insert/read/write/delete
+sheet in Google Spreadsheets that includes create/read/update/delete
 functionality.
 
 **Kind**: global function  
@@ -74,225 +109,334 @@ functionality.
 | options | <code>object</code> | An options object to control library use. |
 
 
-* [Ob2SSTable_(options)](#Ob2SSTable_)
-    * [.add(obj)](#Ob2SSTable_+add) ⇒ <code>boolean</code>
-    * [.flattenObject()](#Ob2SSTable_+flattenObject)
-    * [.unflattenObject()](#Ob2SSTable_+unflattenObject)
-    * [.sanitize(value)](#Ob2SSTable_+sanitize) ⇒ <code>string</code>
-    * [.extendHeaders(flatObjProps)](#Ob2SSTable_+extendHeaders)
-    * [.insertObject(flatObj)](#Ob2SSTable_+insertObject)
-    * [.toArray()](#Ob2SSTable_+toArray) ⇒ <code>array</code>
-    * [.count()](#Ob2SSTable_+count) ⇒ <code>number</code>
-    * [.getObject()](#Ob2SSTable_+getObject) ⇒ <code>object</code>
-    * [.rowToObject(row)](#Ob2SSTable_+rowToObject) ⇒ <code>object</code>
-    * [.getHeaders()](#Ob2SSTable_+getHeaders) ⇒ <code>array</code>
-    * [.getHeadersRange()](#Ob2SSTable_+getHeadersRange) ⇒ <code>Range</code>
-    * [.getColumnAsArray()](#Ob2SSTable_+getColumnAsArray) ⇒ <code>array</code>
-    * [.getData()](#Ob2SSTable_+getData) ⇒ <code>array</code>
-    * [.getDataRange()](#Ob2SSTable_+getDataRange) ⇒ <code>Range</code>
-    * [.getNextId()](#Ob2SSTable_+getNextId) ⇒ <code>number</code>
-    * [.getObjectRange(id)](#Ob2SSTable_+getObjectRange) ⇒ <code>Range</code>
-    * [.remove(obj)](#Ob2SSTable_+remove) ⇒ <code>bool</code>
-    * [.clear()](#Ob2SSTable_+clear)
-    * [.destroy()](#Ob2SSTable_+destroy)
+* [Ob2SSTable(options)](#Ob2SSTable)
+    * [.toArray()](#Ob2SSTable+toArray) ⇒ <code>array</code>
+    * [.getColumnAsArray(columnName)](#Ob2SSTable+getColumnAsArray) ⇒ <code>array</code>
+    * [.count()](#Ob2SSTable+count) ⇒ <code>number</code>
 
-<a name="Ob2SSTable_+add"></a>
+<a name="Ob2SSTable+toArray"></a>
 
-### ob2SSTable_.add(obj) ⇒ <code>boolean</code>
-Writes an object into the table.
+### ob2SSTable.toArray() ⇒ <code>array</code>
+Reads all objects from the table into an array.
 
-Every object *MUST* have an 'id' parameter. If you don't set one, one
-will be automatically assigned and added to your objects. Automatic IDs
-are unique, but deleted object ids are re-used.  Insertion checks
-for repeat IDs and throws an error if an ID is repeated.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>boolean</code> - True if written, false if it couldn't be written.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| obj | <code>object</code> | The object to write. |
-
-<a name="Ob2SSTable_+flattenObject"></a>
-
-### ob2SSTable_.flattenObject()
-Flattens an object for writing.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-<a name="Ob2SSTable_+unflattenObject"></a>
-
-### ob2SSTable_.unflattenObject()
-Unflattens an object for reading.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-<a name="Ob2SSTable_+sanitize"></a>
-
-### ob2SSTable_.sanitize(value) ⇒ <code>string</code>
-Sanitizes a string for writing into a spreadsheet.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>string</code> - A string that is safe to write to spreadsheets.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | <code>string</code> | The value to sanitize. |
-
-<a name="Ob2SSTable_+extendHeaders"></a>
-
-### ob2SSTable_.extendHeaders(flatObjProps)
-When an object is inserted into a table, its headers are checked against the
-headers already in place.  If they're different, the table's headers are 
-extended to accommodate the new object of the same type.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| flatObjProps | <code>array</code> | The property names of the object to be inserted. |
-
-<a name="Ob2SSTable_+insertObject"></a>
-
-### ob2SSTable_.insertObject(flatObj)
-Inserts an object into the Google sheet.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| flatObj | <code>object</code> | The flattened object to be inserted into the prepared sheet. |
-
-<a name="Ob2SSTable_+toArray"></a>
-
-### ob2SSTable_.toArray() ⇒ <code>array</code>
-Reads all objects fromt he table into an array.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
+**Kind**: instance method of [<code>Ob2SSTable</code>](#Ob2SSTable)  
 **Returns**: <code>array</code> - An array of all objects in the database.  
-<a name="Ob2SSTable_+count"></a>
+<a name="Ob2SSTable+getColumnAsArray"></a>
 
-### ob2SSTable_.count() ⇒ <code>number</code>
-Returns the number of items in the table.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>number</code> - The number of items in the table.  
-<a name="Ob2SSTable_+getObject"></a>
-
-### ob2SSTable_.getObject() ⇒ <code>object</code>
-Gets an object by its ID.
-
-Note that while Ob2SS prevents you from writing an object with
-a duplicate ID value, nothing will prevent one of your users from 
-writing duplicate values by hand.  This returns the FIRST object
-with the ID you're looking for.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>object</code> - The FIRST object with this id value.  
-<a name="Ob2SSTable_+rowToObject"></a>
-
-### ob2SSTable_.rowToObject(row) ⇒ <code>object</code>
-Converts a row of data into an object.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>object</code> - A flattened object with contents equal to the passed array.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| row | <code>array</code> | A row of field contents from the sheet that match the sheets headers. |
-
-<a name="Ob2SSTable_+getHeaders"></a>
-
-### ob2SSTable_.getHeaders() ⇒ <code>array</code>
-Gets the headers for this table.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>array</code> - An array of strings that are the headers of this table.  
-<a name="Ob2SSTable_+getHeadersRange"></a>
-
-### ob2SSTable_.getHeadersRange() ⇒ <code>Range</code>
-Gets the range for the headers for this table.
-
-This function is important. We need to know which row is the header row
-in order to insert and get objects, but it's variable. Some folks will never look at it
-and use the built-in java-script-y titles, while other users will want to write their own
-custom "pretty" headers.
-
-If **headerOffset** is set, the header row will offset by that amount (usually -1).
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>Range</code> - A Google Apps Script Range object where the headers are stored.  
-<a name="Ob2SSTable_+getColumnAsArray"></a>
-
-### ob2SSTable_.getColumnAsArray() ⇒ <code>array</code>
+### ob2SSTable.getColumnAsArray(columnName) ⇒ <code>array</code>
 Gets a column of the table as an array.
 
 Note that this is transposed such that it returns a horizontal array
 representing the vertical values of a column.
 
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
+**Kind**: instance method of [<code>Ob2SSTable</code>](#Ob2SSTable)  
 **Returns**: <code>array</code> - An array of values stored in this column.  
-<a name="Ob2SSTable_+getData"></a>
-
-### ob2SSTable_.getData() ⇒ <code>array</code>
-Gets a 2D array of all the object values of this table.
-
-This follows the convention of [Range].getValues(), so this array is indexed
-first by row, then by column.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>array</code> - A 2D array representing the table of objects.  
-<a name="Ob2SSTable_+getDataRange"></a>
-
-### ob2SSTable_.getDataRange() ⇒ <code>Range</code>
-Gets the range for all the objects in this table.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>Range</code> - A Google Apps Script Range object where the objects are stored.  
-<a name="Ob2SSTable_+getNextId"></a>
-
-### ob2SSTable_.getNextId() ⇒ <code>number</code>
-Gets the next ID for the table.
-
-Currently it's based on the current count of objects, guaranteeing
-uniqueness at the expense of re-using IDs.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>number</code> - The next Id value to use.  
-<a name="Ob2SSTable_+getObjectRange"></a>
-
-### ob2SSTable_.getObjectRange(id) ⇒ <code>Range</code>
-Gets the range for a specific object in the table.
-
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>Range</code> - A Google Apps Script Range object where the object is stored.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| id | <code>number</code> | The ID of the object to get the row for. |
+| columnName | <code>string</code> | The name of the column to fetch. |
 
-<a name="Ob2SSTable_+remove"></a>
+<a name="Ob2SSTable+count"></a>
 
-### ob2SSTable_.remove(obj) ⇒ <code>bool</code>
-Removes an object from the database based on its id.
+### ob2SSTable.count() ⇒ <code>number</code>
+Returns the number of items in the table.
 
-The object must have an ID in order to find it in the sheet.
-Returns false if the object is not found.
+**Kind**: instance method of [<code>Ob2SSTable</code>](#Ob2SSTable)  
+**Returns**: <code>number</code> - The number of items in the table.
 
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-**Returns**: <code>bool</code> - True if object was present and successfully removed.  
+<a name="TableWrapper"></a>
+
+## TableWrapper
+## TABLE FUNCTIONS
+----------------------------------
+Functions that interpret or manipulate a Google Sheet.
+
+These functions are time-intensive and can be costly to test.
+
+**Kind**: global variable  
+
+* [TableWrapper](#TableWrapper)
+    * [.getDataRange(sheet)](#TableWrapper.getDataRange) ⇒ <code>range</code>
+    * [.getHeaderRange(sheet, options)](#TableWrapper.getHeaderRange) ⇒ <code>range</code>
+    * [.getColumnRange(sheet, columnNumber)](#TableWrapper.getColumnRange) ⇒ <code>range</code>
+    * [.getHeadersAsArray(range)](#TableWrapper.getHeadersAsArray) ⇒ <code>array</code>
+    * [.getColumnAsArray(sheet, headerRange)](#TableWrapper.getColumnAsArray) ⇒ <code>array</code>
+    * [.getDataAsArray(sheet)](#TableWrapper.getDataAsArray) ⇒ <code>array</code>
+    * [.getDefaultSheetKey()](#TableWrapper.getDefaultSheetKey) ⇒ <code>range</code>
+
+<a name="TableWrapper.getDataRange"></a>
+
+### TableWrapper.getDataRange(sheet) ⇒ <code>range</code>
+Gets the data range of the sheet.
+
+Basically this is the cell range that ISN'T headers.
+
+**Kind**: static method of [<code>TableWrapper</code>](#TableWrapper)  
+**Returns**: <code>range</code> - A range that represents all the data after the header zone.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| obj | <code>object</code> | The object to remove. |
+| sheet | <code>sheet</code> | The sheet to fetch from. |
 
-<a name="Ob2SSTable_+clear"></a>
+<a name="TableWrapper.getHeaderRange"></a>
 
-### ob2SSTable_.clear()
-WARNING: Deletes all the objects in a table.  Good for some cases.
+### TableWrapper.getHeaderRange(sheet, options) ⇒ <code>range</code>
+Gets the header range.
 
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
-<a name="Ob2SSTable_+destroy"></a>
+This is everything either
+ + within the frozen rows section, or
+ + above the headerOffset area.
 
-### ob2SSTable_.destroy()
-WARNING: Deletes the *entire table sheet* in the spreadsheet.
+**Kind**: static method of [<code>TableWrapper</code>](#TableWrapper)  
+**Returns**: <code>range</code> - The range of the header area.  
 
-**Kind**: instance method of [<code>Ob2SSTable_</code>](#Ob2SSTable_)  
+| Param | Type | Description |
+| --- | --- | --- |
+| sheet | <code>sheet</code> | The sheet to fetch from. |
+| options | <code>object</code> | The options object used by Ob2ss. |
+
+<a name="TableWrapper.getColumnRange"></a>
+
+### TableWrapper.getColumnRange(sheet, columnNumber) ⇒ <code>range</code>
+Gets the range of a column.
+
+**Kind**: static method of [<code>TableWrapper</code>](#TableWrapper)  
+**Returns**: <code>range</code> - The range of the target column.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sheet | <code>sheet</code> | The sheet to fetch from. |
+| columnNumber | <code>number</code> | The 1-based index of the column to fetch. |
+
+<a name="TableWrapper.getHeadersAsArray"></a>
+
+### TableWrapper.getHeadersAsArray(range) ⇒ <code>array</code>
+Gets the header range as an array of data.
+
+**Kind**: static method of [<code>TableWrapper</code>](#TableWrapper)  
+**Returns**: <code>array</code> - The 1-dimensional array of headers.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| range | <code>range</code> | The range to get headers from. |
+
+<a name="TableWrapper.getColumnAsArray"></a>
+
+### TableWrapper.getColumnAsArray(sheet, headerRange) ⇒ <code>array</code>
+Gets the column as an array.
+
+**Kind**: static method of [<code>TableWrapper</code>](#TableWrapper)  
+**Returns**: <code>array</code> - The column as a 1-dimensional array.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sheet | <code>sheet</code> | The sheet to fetch from. |
+| headerRange | <code>range</code> | The range of the headers of this sheet. |
+
+<a name="TableWrapper.getDataAsArray"></a>
+
+### TableWrapper.getDataAsArray(sheet) ⇒ <code>array</code>
+Gets the DATA from the sheet.
+
+**Kind**: static method of [<code>TableWrapper</code>](#TableWrapper)  
+**Returns**: <code>array</code> - The 2-dimensional array of values.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sheet | <code>sheet</code> | The sheet to fetch from. |
+
+<a name="TableWrapper.getDefaultSheetKey"></a>
+
+### TableWrapper.getDefaultSheetKey() ⇒ <code>range</code>
+Gets the default sheet key.
+
+Right now this is only useful for testing, but in the long-run it can be used
+to get zero-config tables for prototyping.
+
+**Kind**: static method of [<code>TableWrapper</code>](#TableWrapper)  
+**Returns**: <code>range</code> - The range of the target column.  
+<a name="DataManager"></a>
+
+## DataManager
+## DATA MANAGER
+----------------------------------
+Functions that manipulate objects or perform important checks.
+
+These are functions that support the interpretation of data from and to the tables.
+
+**Kind**: global variable  
+
+* [DataManager](#DataManager)
+    * [.objectToRow(flatObj, headers)](#DataManager.objectToRow) ⇒ <code>array</code>
+    * [.isNoWrite(value, header)](#DataManager.isNoWrite) ⇒ <code>boolean</code>
+    * [.isNoRead(header)](#DataManager.isNoRead) ⇒ <code>boolean</code>
+    * [.objectsToRows(flatObjs, headers)](#DataManager.objectsToRows) ⇒ <code>array</code>
+    * [.rowToObject(row, headers)](#DataManager.rowToObject) ⇒ <code>object</code>
+    * [.rowsToObjects(rows, headers)](#DataManager.rowsToObjects) ⇒ <code>array</code>
+    * [.flattenObject(obj)](#DataManager.flattenObject) ⇒ <code>object</code>
+    * [.unflattenObject(flatObj)](#DataManager.unflattenObject) ⇒ <code>object</code>
+    * [.trimObject(obj)](#DataManager.trimObject) ⇒ <code>object</code>
+    * [.sanitize(value)](#DataManager.sanitize) ⇒ <code>string</code>
+    * [.isEmpty(obj)](#DataManager.isEmpty) ⇒ <code>boolean</code>
+    * [.removeDupes(arr)](#DataManager.removeDupes) ⇒ <code>array</code>
+
+<a name="DataManager.objectToRow"></a>
+
+### DataManager.objectToRow(flatObj, headers) ⇒ <code>array</code>
+Converts a *flat* object into a row.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>array</code> - The 1-dimensional, ordered array of object properties.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| flatObj | <code>object</code> | A flattened object to convert. |
+| headers | <code>array</code> | The array of headers to key against. |
+
+<a name="DataManager.isNoWrite"></a>
+
+### DataManager.isNoWrite(value, header) ⇒ <code>boolean</code>
+Determines if a value or field type should not be written.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>boolean</code> - Whether the situation is a no-write.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>primitive</code> | The number or string to be written. |
+| header | <code>string</code> | The header name. |
+
+<a name="DataManager.isNoRead"></a>
+
+### DataManager.isNoRead(header) ⇒ <code>boolean</code>
+Determines if a value or field type should not be read.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>boolean</code> - Whether the situation is a no-read.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| header | <code>string</code> | The header name. |
+
+<a name="DataManager.objectsToRows"></a>
+
+### DataManager.objectsToRows(flatObjs, headers) ⇒ <code>array</code>
+Converts an array of *flat* objects into an array of row arrays.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>array</code> - An array of arrays of ordered of object properties.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| flatObjs | <code>array</code> | An array of flattened objects to convert. |
+| headers | <code>array</code> | The array of headers to key against. |
+
+<a name="DataManager.rowToObject"></a>
+
+### DataManager.rowToObject(row, headers) ⇒ <code>object</code>
+Converts a row into an object.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>object</code> - The *unflattened* object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| row | <code>array</code> | The row array to convert. |
+| headers | <code>array</code> | The array of headers to key against. |
+
+<a name="DataManager.rowsToObjects"></a>
+
+### DataManager.rowsToObjects(rows, headers) ⇒ <code>array</code>
+Multiple property arrays into an array of *unflattened* objects.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>array</code> - An array of unflattened objects.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| rows | <code>array</code> | The array of property arrays to convert. |
+| headers | <code>array</code> | The array of headers to key against. |
+
+<a name="DataManager.flattenObject"></a>
+
+### DataManager.flattenObject(obj) ⇒ <code>object</code>
+Unfolds arrays and objects into a flattened object.
+
+Objects often have nested values like arrays and objects. This process
+"unfolds" those objects into flattened versions that can be written to a
+row of data in a spreadsheet.  See tests for examples.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>object</code> - The flattened object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| obj | <code>object</code> | The object to flatten. |
+
+<a name="DataManager.unflattenObject"></a>
+
+### DataManager.unflattenObject(flatObj) ⇒ <code>object</code>
+Reverses the flattening process.
+
+This process un-nests the data in a row into a "reconstituted" object.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>object</code> - The unflattened object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| flatObj | <code>object</code> | The object to unflatten. |
+
+<a name="DataManager.trimObject"></a>
+
+### DataManager.trimObject(obj) ⇒ <code>object</code>
+Recurses through an object's properties and trims away undefined 
+or null values.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>object</code> - The trimmed object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| obj | <code>object</code> | The object to trim. |
+
+<a name="DataManager.sanitize"></a>
+
+### DataManager.sanitize(value) ⇒ <code>string</code>
+Sanitizes strings to be written to spreadsheets.
+
+TODO: This is currently unused, but works.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>string</code> - The sanitized version of the input.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>string</code> | The string or value to sanitize |
+
+<a name="DataManager.isEmpty"></a>
+
+### DataManager.isEmpty(obj) ⇒ <code>boolean</code>
+Determines if an object is empty.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>boolean</code> - Whether the object is indeed empty.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| obj | <code>object</code> | The object to evaluate. |
+
+<a name="DataManager.removeDupes"></a>
+
+### DataManager.removeDupes(arr) ⇒ <code>array</code>
+Removes duplicates from an array.
+
+TODO: This is unused, but will be an important part of extending
+headers when adding new objects to an Ob2SS table.
+
+**Kind**: static method of [<code>DataManager</code>](#DataManager)  
+**Returns**: <code>array</code> - The deduplicated array.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| arr | <code>array</code> | The array to deduplicate. |
