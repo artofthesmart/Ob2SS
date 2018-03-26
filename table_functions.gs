@@ -108,18 +108,26 @@ TableWrapper.getDataAsArray = function(sheet) {
  * Gets the default sheet key.
  *
  * Right now this is only useful for testing, but in the long-run it can be used
- * to get zero-config tables for prototyping.
+ * to get zero-config tables for prototyping.  If this script is BOUND to a spread-
+ * sheet that will be returned first.  Otherwise if a spreadsheet was created for
+ * this script previously, that will be returned.  Otherwise a new sheet will be
+ * created for this script.
  * 
- * @returns {range} The range of the target column.
+ * @returns string The ID of the spreadsheet to attach to.
  */
 TableWrapper.getDefaultSheetKey = function() {
   var defaultFileName = "Ob2SS data: " + ScriptApp.getScriptId();
   var existingFiles = DriveApp.getFilesByName(defaultFileName);
-
+  var boundSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // Return the bound Spreadsheet if it's available.
+  if (boundSpreadsheet != null) return boundSpreadsheet.getId();
+  
+  // Return an existing "default" sheet if possible.
   if (existingFiles.hasNext()) {
     return existingFiles.next().getId();
   }
-  else {
-    return SpreadsheetApp.create(defaultFileName, 1, 1).getId();
-  }
+  
+  // Create a new "default" sheet and use that.
+  return SpreadsheetApp.create(defaultFileName, 1, 1).getId();
 }
