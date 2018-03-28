@@ -19,8 +19,7 @@ var DataManager = {};
  */
 DataManager.objectToRow = function(flatObj, headers) {
   var newRow = [];
-  //var formulas = this.getObjectRange(obj.id).getFormulas()[0];
-
+  
   for (var i = 0; i < headers.length; i++) {
     var header = headers[i];
     var value = DataManager.sanitize(flatObj[headers[i]]);
