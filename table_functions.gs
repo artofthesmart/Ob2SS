@@ -93,7 +93,7 @@ TableWrapper.getColumnAsArray = function(sheet, headerRange, columnName) {
 }
 
 /**
- * Gets the DATA from the sheet.
+ * Gets the data from the sheet.
  * 
  * @param {sheet} sheet The sheet to fetch from.
  * @returns {array} The 2-dimensional array of values.
@@ -130,4 +130,61 @@ TableWrapper.getDefaultSheetKey = function() {
   
   // Create a new "default" sheet and use that.
   return SpreadsheetApp.create(defaultFileName, 1, 1).getId();
+}
+
+/**
+ * Extends the columns of a table to match a new set of headers.
+ *
+ * The headers in a sheet represent the fields of an object. This function will
+ * ADD new headers to the sheet to match an array of target properties.  The fields
+ * may not be in order of `targetProps`.
+ * 
+ * **WARNING** This overwrites all headers. If `targetProps` isn't the union of
+ * existing headers with new, required headers, you're gonna have a bad time.
+ * 
+ * @param {sheet} sheet The spreadsheet sheet to operate on.
+ * @param {range} headerRange The range of headers in the sheet to operate on.
+ * @param {array} targetProps A 2-d array of properties to extend to.
+ */
+TableWrapper.extendHeaders = function(sheet, headerRange, targetProps) {
+  if (targetProps.length < headerRange.getNumColumns()) 
+    throw 'Cannot shrink columns.';
+
+  var numColsNeeded = targetProps.length - headerRange.getNumColumns();
+
+  if (numColsNeeded > 0) {
+    sheet.insertColumnsAfter(headerRange.getNumColumns(), numColsNeeded);
+    headerRange = headerRange.offset(0, 0, 1, sheet.getMaxColumns());
+  }
+  
+  headerRange.setValues([targetProps]); // 2d array
+  SpreadsheetApp.flush();
+}
+
+/**
+ * Adds rows to a sheet.
+ *
+ * Adds rows to the bottom of a sheet in bulk w/ formatting.
+ * 
+ * @param {sheet} sheet The spreadsheet sheet to operate on.
+ * @param {int} rows The number of rows to append.
+ */
+TableWrapper.insertRows = function(sheet, rows) {
+  var lastRow = sheet.getLastRow();             // e.g. 5
+  sheet.insertRowsAfter(lastRow, rows.length);  // e.g. Rows #6 thru 10.
+  var blankRange = sheet.getRange(lastRow + 1, 1, rows.length, sheet.getMaxColumns());
+
+  var cellFormats = blankRange.getNumberFormats();
+  
+  // Set Formatting: if a cell is a string, give it '@';
+  for (var row = 0; row < rows.length; row++) {
+    for (var cell = 0; cell < row.length; row++) {
+      if (typeof row[cell] == 'string') {
+        cellFormats[row][cell] = '@';
+      }
+    }
+  }
+
+  blankRange.setNumberFormats(cellFormats);
+  blankRange.setValues(rows);
 }
