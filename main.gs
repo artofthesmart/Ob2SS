@@ -5,7 +5,7 @@
  * These elements are going to be the "headline items" a user can access
  * from their script.  They're meant to be visible via intellisense.
  * 
- * Visit artofthesmart.com for details.
+ * Visit ob2ss.com for details.
  */
 
 'use strict';
