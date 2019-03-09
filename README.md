@@ -3,7 +3,7 @@
 
 The content in this document is pretty focused on the technical details of the library.  Please visit the project page for implementation details, caveats, and examples.
 
-http://artofthesmart.com/projects/ob2ss-the-google-sheets-database
+http://ob2ss.com
 
 ## Members
 
